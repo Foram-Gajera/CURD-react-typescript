@@ -3,12 +3,12 @@ import {Formik, Form} from 'formik';
 import { formikProps } from '../interfaces/formikProps.interface';
 import * as Yup from 'yup'; 
 import FormikControl from '../formik-controls/FormikControl';
-import User from '../interfaces/user.interface';
-import { useHistory, useParams } from 'react-router-dom';
+import User, { UserIdType } from '../interfaces/user.interface';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { apiUrl } from '../redux/sagas/userSaga';
 import { useDispatch } from 'react-redux';
-import { addUser } from '../redux/actions/user';
+import { addUser, updateUser } from '../redux/actions/user';
 
 const UserForm = ({control, type, name, label}: formikProps) => {
 
@@ -16,11 +16,9 @@ const UserForm = ({control, type, name, label}: formikProps) => {
     const dispatch = useDispatch();
     const history = useHistory();
 
-    interface ParamTypes {
-        id: string
-      }
+ 
 
-    const {id} = useParams<ParamTypes>();
+    const {id} = useParams<UserIdType>();
     console.log(id);
 
     const initialValues: User = {
@@ -34,7 +32,15 @@ const UserForm = ({control, type, name, label}: formikProps) => {
 
     const onSubmit = (values: User) => {
         console.log(values);
-        dispatch(addUser(values));
+        if(id){
+            debugger
+            values.id = id;
+            dispatch(updateUser(values));
+        }
+        else{
+            dispatch(addUser(values));
+
+        }
         history.push('/');
     }
 
@@ -64,7 +70,7 @@ const UserForm = ({control, type, name, label}: formikProps) => {
 
     return (
         <div>
-            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} enableReinitialize>
+            <Formik initialValues={user||initialValues} onSubmit={onSubmit} validationSchema={validationSchema} enableReinitialize>
                 {
                     (formik) => {
                         return (
@@ -104,11 +110,17 @@ const UserForm = ({control, type, name, label}: formikProps) => {
                   style={{ marginLeft: "30%", marginTop: "2%" }}
                   disabled={!formik.isValid}
                 >
-                    submit
-                  {/* {user ? "Update" : "Add"} */}
+                  {user ? "Update" : "Add"}
                 </button>
 
                                 </Form>
+                                <Link
+                className="btn btn-warning"
+                style={{ marginLeft: "35%", marginTop: "-3.5%" }}
+                to="/"
+              >
+                Back
+              </Link>
                             </div>
                         )
                     }

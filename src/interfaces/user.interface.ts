@@ -1,8 +1,11 @@
 export default interface User {
-  id: string;
+  id?: string;
   name: string;
   email: string;
   mobile_check: boolean;
   mobile?: string;
   company: string;
+}
+export interface UserIdType {
+  id: string;
 }

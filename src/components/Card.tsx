@@ -41,7 +41,7 @@ const Card: React.FC<User> = (props) => {
         <div style={{ textAlign: "center" }}>
         <button
           className="btn btn-success"
-          onClick={() => updateRecord(props.id)}
+          onClick={() => updateRecord(props.id? props.id:'')}
         >
           Update
         </button>
@@ -50,7 +50,7 @@ const Card: React.FC<User> = (props) => {
         <button
           className="btn btn-danger"
           style={{ marginTop: "10%" }}
-          onClick={() => deleteRecord(props.id)}
+          onClick={() => deleteRecord(props.id?props.id:'')}
         >
           Delete
         </button>

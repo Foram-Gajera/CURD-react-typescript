@@ -2,6 +2,7 @@ import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 // import { initialStateType } from "../../interfaces/initialState.interface";
 import * as actionTypes from "../types";
+import User, { UserIdType } from "../../interfaces/user.interface";
 
 export const apiUrl = "https://user-saga-default-rtdb.firebaseio.com/";
 
@@ -10,8 +11,7 @@ function getApi() {
       // debugger;
       let users = [];
       for (const key in res.data) {
-        debugger
-        users.push({ id: key, ...res.data[key] });
+        users.push({  ...res.data[key],id: key });
       }
       return users;
     });
@@ -58,7 +58,10 @@ function* deleteUser(action: actionTypes.DeleteUserTypes) {
   }
 
 function* addUser(action: actionTypes.AddUserTypes){
-    const user = action.payload;
+  // debugger
+  //   const [id, ...user] = [action.payload];
+  //   console.log(user)
+  const user = action.payload
     try{
         axios.post(apiUrl+"users.json", user).then(res=>{
             console.log(res);
@@ -73,20 +76,26 @@ function* addUser(action: actionTypes.AddUserTypes){
     }
 }
 
-function* updateUser(action: actionTypes.UpdateUserTypes){
+// const getKeyValue = function<T extends object, U extends keyof T> (obj: T, key: U) { return obj[key] }
+
+function* editUser(action: any){
+  
+  const {id}=action.payload;
   const user = action.payload;
-  // try{
-  //     axios.put(apiUrl+`users/${user.id}.json`, user).then(res=>{
-  //         console.log(res);
-  //         alert('Record is added successfully!')
-  //     }).catch(err=>console.log(err));
-  //     yield put({type: "ADD_USER_SUCCESS", payload: user})
+  debugger
+  console.log(id);
+  try{
+      axios.put(apiUrl+`users/${id}.json`, user).then(res=>{
+          console.log(res);
+          alert('Record is updated successfully!')
+      }).catch(err=>console.log(err));
+      yield put({type: "ADD_USER_SUCCESS", payload: user, userId: id})
 
-  // }catch(e){
-  //     console.log(e);
-  //     yield put({type: "ADD_USER_FAILED", payload: e.message})
+  }catch(e){
+      console.log(e);
+      yield put({type: "ADD_USER_FAILED", payload: e.message})
 
-  // }
+  }
 }
 
 export function* userSaga (){
@@ -102,5 +111,5 @@ export function* deleteSaga() {
   }
 
   export function* updateSaga() {
-    yield takeLatest("UPDATE_USER_REQUESTED", updateUser);
+    yield takeLatest("UPDATE_USER_REQUESTED", editUser);
   }

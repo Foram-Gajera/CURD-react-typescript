@@ -22,6 +22,7 @@ export function addUser(user: User): actionTypes.ActionTypes {
 }
 
 export function updateUser(user: User): actionTypes.ActionTypes {
+    console.log(user, 'update user')
     return {
         type: actionTypes.UPDATE_USER_REQUESTED,
         payload: user

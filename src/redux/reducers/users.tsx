@@ -77,6 +77,7 @@ const users = (state= initialState, action: actionTypes.ActionTypes): initialSta
             };
 
             case actionTypes.UPDATE_USER_REQUESTED:
+              debugger
               return {
                 ...state,
                 loading: true,
@@ -86,7 +87,10 @@ const users = (state= initialState, action: actionTypes.ActionTypes): initialSta
               return {
                 ...state,
                 loading: false,
-                // users: [...state.users, action.payload],
+                users: [
+          (state.users[action.userId] = action.payload),
+          ...state.users.filter((user) => user.id !== action.userId),
+        ],
               };
         
             case actionTypes.UPDATE_USER_FAILED:
